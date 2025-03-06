@@ -1,18 +1,24 @@
+# all persons
 GET http://localhost:3001/api/persons
 
 ###
+# phonebook info
 GET http://localhost:3001/info
 
 ###
+# info for one person
 GET http://localhost:3001/api/persons/1
 
 ###
+# person not found
 GET http://localhost:3001/api/persons/8
 
 ###
+# delete by id
 DELETE http://localhost:3001/api/persons/1
 
 ###
+# Add a new person
 POST http://localhost:3001/api/persons
 content-type: application/json
 
@@ -21,6 +27,6 @@ content-type: application/json
     "number": "123"
 }
 
-
 ###
+# Unknow endpoint
 GET http://localhost:3001/unknow
