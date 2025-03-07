@@ -21,7 +21,10 @@ if (process.argv.length === 3) {
     //only password
     Person.find({})
         .then(result => {
-            result.forEach(person => console.log(person));
+            console.log('Phonebook:');
+            result.forEach(person => console.log(
+                `${person.name} ${person.number}`
+            ));
             mongoose.connection.close();
         });
 
