@@ -20,6 +20,8 @@ const unknownEndpoint = (request, response) => {
 const errorHandler = (error, req, res, next) => {
     if(error.name === 'CastError') {
         return res.status(400).send({error: 'bad formatted id'})
+    }else if(error.name === 'ValidationError') {
+        return res.status(400).send({error: error.message})
     }
     next(error)
 }
@@ -51,15 +53,10 @@ app.get('/api/persons/:id', (request, response, next) =>{
 })
 
 app.post('/api/persons', (request, response, next) =>{
-    const body = request.body;
-    if (!body.name || !body.number) {
-        return response.status(400).json(
-            {error: 'name and number are required'}
-        )
-    }
+    const {name, number} = request.body;
     const person = new Person({
-        name: body.name,
-        number: body.number
+        name,
+        number
     })
     person.save().then(savedPerson => {
         response.json(savedPerson)
@@ -67,18 +64,13 @@ app.post('/api/persons', (request, response, next) =>{
 })
 
 app.put('/api/persons/:id', (request, response, next) =>{
-    const name = request.body.name
-    const number = request.body.number
-    if (!name || !number) {
-        return response.status(400).send({
-            error: 'name and number are required'
-        })
-    }
-    const person = {
-        name,
-        number
-    }
-    Person.findByIdAndUpdate(request.params.id, person, {new: true})
+    const {name, number} = request.body;
+
+    Person.findByIdAndUpdate(
+        request.params.id,
+        {name, number},
+        {new: true, runValidators: true, context: 'query'}
+    )
         .then(updatedPerson => response.json(updatedPerson))
         .catch(error => next(error))
 })
